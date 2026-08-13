@@ -50,12 +50,19 @@ def latest(device_id):
             "error": "device not found"
         }), 404
 
+    measurement = get_latest_from_cache(device_id)
+
+    if measurement is not None:
+        return jsonify(measurement), 200
+
     measurement = get_latest_measurement(device_id)
 
     if measurement is None:
         return jsonify({
             "error": "no measurements found"
         }), 404
+
+    set_latest_in_cache(device_id, measurement)
 
     return jsonify(measurement), 200
     
@@ -64,10 +71,7 @@ def latest(device_id):
     # 1. Försök läsa från Redis.
     # 2. Vid cache miss: läs från PostgreSQL.
     # 3. Spara databasresultatet i Redis.
-    return jsonify({
-        "message": "TODO: implementera latest measurement",
-        "deviceId": device_id
-    }), 501
+    
 
 
 @app.get("/devices/<device_id>/measurements")
@@ -100,12 +104,6 @@ def create_measurement():
     print(f"VALID measurement stored: {measurement}")
     return jsonify({"status": "created", "measurement": measurement}), 201
 
-    # TODO M1:
-    # Kontrollera med device_exists(...) att deviceId tillhör en känd sensor.
-    # Okänd sensor ska ge 400 med ett tydligt JSON-fel.
-    #
-    # Spara till PostgreSQL via insert_measurement(data).
-    #
     # TODO M2:
     # Uppdatera latest-cache för sensorn.
     #
