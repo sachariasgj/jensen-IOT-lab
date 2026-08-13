@@ -79,7 +79,6 @@ def get_latest_measurement(device_id):
 
             return _json_ready(row)
 
-
 def get_measurements_for_device(device_id):
     query = """
         SELECT id, device_id, temperature, humidity, battery, created_at
