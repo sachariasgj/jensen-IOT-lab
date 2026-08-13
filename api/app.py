@@ -66,14 +66,6 @@ def latest(device_id):
 
     return jsonify(measurement), 200
     
-    # TODO M2:
-    # Utöka M1-lösningen med cache-aside:
-    # 1. Försök läsa från Redis.
-    # 2. Vid cache miss: läs från PostgreSQL.
-    # 3. Spara databasresultatet i Redis.
-    
-
-
 @app.get("/devices/<device_id>/measurements")
 def device_history(device_id):
     if not device_exists(device_id):
@@ -101,6 +93,9 @@ def create_measurement():
         }), 400
 
     measurement = insert_measurement(data)
+
+    set_latest_in_cache(data["deviceId"], measurement)
+
     print(f"VALID measurement stored: {measurement}")
     return jsonify({"status": "created", "measurement": measurement}), 201
 
