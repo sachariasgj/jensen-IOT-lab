@@ -9,6 +9,7 @@ from db import (
     get_latest_measurement,
     get_measurements_for_device,
     insert_measurement,
+    get_statistics,
 )
 from validation import validate_measurement
 from cache import get_latest_from_cache, set_latest_in_cache
@@ -98,10 +99,9 @@ def create_measurement():
 
 @app.get("/statistics")
 def statistics():
-    # ⭐ Utmaning:
-    # Returnera antal devices, antal measurements, avg temp etc.
-    return jsonify({"message": "Optional challenge"}), 501
+    stats = get_statistics()
 
+    return jsonify(stats), 200
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=False)

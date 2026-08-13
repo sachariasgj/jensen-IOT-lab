@@ -120,3 +120,21 @@ def insert_measurement(data):
             )
             row = cur.fetchone()
             return _json_ready(row)
+
+def get_statistics():
+    query = """
+        SELECT
+            (SELECT COUNT(*) FROM devices) as device_count,
+            COUNT(*) AS measurement_count,
+            ROUND(AVG(temperature), 2) AS average_temperature,
+            ROUND(AVG(humidity), 2) AS average_humidity,
+            ROUND(AVG(battery), 2) AS average_battery
+        FROM measurements;
+    """
+
+    with get_connection() as conn:
+        with conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor) as cur:
+            cur.execute(query)
+            row = cur.fetchone()
+
+            return _json_ready(row)
