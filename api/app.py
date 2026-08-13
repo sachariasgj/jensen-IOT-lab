@@ -45,10 +45,20 @@ def measurements():
 
 @app.get("/devices/<device_id>/latest")
 def latest(device_id):
-    # TODO M1:
-    # Läs senaste mätningen från PostgreSQL med get_latest_measurement(...).
-    # Returnera 404 om sensorn eller en mätning saknas.
-    #
+    if not device_exists(device_id):
+        return jsonify({
+            "error": "device not found"
+        }), 404
+
+    measurement = get_latest_measurement(device_id)
+
+    if measurement is None:
+        return jsonify({
+            "error": "no measurements found"
+        }), 404
+
+    return jsonify(measurement), 200
+    
     # TODO M2:
     # Utöka M1-lösningen med cache-aside:
     # 1. Försök läsa från Redis.
@@ -62,13 +72,13 @@ def latest(device_id):
 
 @app.get("/devices/<device_id>/measurements")
 def device_history(device_id):
-    # TODO M1:
-    # Hämta sensorhistorik från PostgreSQL.
-    # Känd sensor utan mätningar: 200 och []. Okänd sensor: 404.
-    return jsonify({
-        "message": "TODO: implementera device history",
-        "deviceId": device_id
-    }), 501
+    if not device_exists(device_id):
+        return jsonify({
+            "error": "device not found"
+        }), 404
+
+    measurements = get_measurements_for_device(device_id)
+    return jsonify(measurements), 200
 
 
 @app.post("/measurements")
@@ -79,6 +89,16 @@ def create_measurement():
     if errors:
         print(f"INVALID measurement from {data.get('deviceId', 'unknown')}: {errors}")
         return jsonify({"errors": errors}), 400
+
+    if not device_exists(data["deviceId"]):
+        print(f"UNKNOWN device: {data['deviceId']}")
+        return jsonify({
+            "errors": ["unknown deviceId"]
+        }), 400
+
+    measurement = insert_measurement(data)
+    print(f"VALID measurement stored: {measurement}")
+    return jsonify({"status": "created", "measurement": measurement}), 201
 
     # TODO M1:
     # Kontrollera med device_exists(...) att deviceId tillhör en känd sensor.
