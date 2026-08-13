@@ -32,7 +32,6 @@ def health():
         "pod": POD_NAME,
     }), 200
 
-
 @app.get("/devices")
 def devices():
     return jsonify(get_devices()), 200
@@ -93,20 +92,9 @@ def create_measurement():
         }), 400
 
     measurement = insert_measurement(data)
-
     set_latest_in_cache(data["deviceId"], measurement)
-
     print(f"VALID measurement stored: {measurement}")
     return jsonify({"status": "created", "measurement": measurement}), 201
-
-    # TODO M2:
-    # Uppdatera latest-cache för sensorn.
-    #
-    # Under starter-fasen returneras 202 så att simulatorn kan köras
-    # även innan studenten implementerat persistensen.
-    print(f"VALID measurement received: {data}")
-    return jsonify({"status": "accepted", "measurement": data}), 202
-
 
 @app.get("/statistics")
 def statistics():

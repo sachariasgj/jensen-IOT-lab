@@ -8,7 +8,6 @@ client = redis.Redis(
     decode_responses=True,
 )
 
-
 def get_latest_from_cache(device_id):
     key = f"latest:{device_id}"
 

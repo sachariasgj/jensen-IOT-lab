@@ -13,7 +13,6 @@ def get_connection():
         password=os.getenv("DB_PASSWORD", "student"),
     )
 
-
 def _json_ready(row):
     if row is None:
         return None
@@ -49,7 +48,6 @@ def get_measurements():
         with conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor) as cur:
             cur.execute(query)
             return [_json_ready(row) for row in cur.fetchall()]
-
 
 def device_exists(device_id):
     query = """
@@ -97,7 +95,6 @@ def get_measurements_for_device(device_id):
 
             return [_json_ready(row) for row in rows]
 
-
 def insert_measurement(data):
     query = """
         INSERT INTO measurements (
@@ -121,6 +118,5 @@ def insert_measurement(data):
                     data.get("battery"),
                 ),
             )
-
             row = cur.fetchone()
             return _json_ready(row)
