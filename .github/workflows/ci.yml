@@ -22,7 +22,7 @@ jobs:
 
       - name: Run tests
         run: python -m pytest tests -q
-        working-directory: api/requirements.txt
+        working-directory: api
 
       - name: Build API Docker image
         run: docker build -t jensen-iot-api:ci ./api
