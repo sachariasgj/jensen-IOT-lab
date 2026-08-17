@@ -12,7 +12,7 @@
 
 2. **Varför ska felaktig sensordata stoppas innan den sparas?**
 
-    Det är ju ganska självklart att felaktig data stoppas...
+    Det är ju ganska självklart att felaktig data bör stoppas...
     Vi vill ju kunna lita på datan som vi sparar i databasen.
 
 3. **Varför passar PostgreSQL för historiska mätvärden?**

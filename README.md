@@ -55,7 +55,8 @@ För att köra projektet behövs:
 - Docker Compose
 - Minikube och kubectl för Kubernetes-daemon
 
-Python behöver inte installeras lokalt utan installeras lokalt i Docker-containern som kör API:t
+Python behöver inte installeras lokalt eftersom Python och projektets 
+dependencies installeras i Docker-imagen som används för API:t
 
 ## Starta projektet
 
@@ -90,7 +91,7 @@ http://localhost:5001
 
 Några exempel på API:ts endpoints:
 
-| Method | Endpoint | Beskriving
+| Method | Endpoint | Beskrivning
 |---|---|---|
 | GET | `/health` | används för att kontrollera att API:t körs |
 | GET | `/devices` | Hämtar registrerade sensorer |
@@ -103,7 +104,7 @@ Några exempel på API:ts endpoints:
 Giltiga mätvärden valideras och sparas i PostgreSQL. Ett lyckat POST-anrop
 returnerar HTTP-status `201`.
 
-Ogiltig sensordata eller data från en okänd sensor returneras HTTP-status `400`
+Ogiltig sensordata eller data från en okänd sensor returnerar HTTP-status `400`
 och datan sparas inte i databasen.
 
 ## Sensor simulator
@@ -121,7 +122,7 @@ ogiltiga mätvärden som ska stoppas av API:ts validering och ge status `400`.
 
 ## PostgreSQL
 
-PostgreSQL används för presistent lagring för enheter (sensorer) och historiska
+PostgreSQL används för persistent lagring för enheter (sensorer) och historiska
 mätvärden.
 
 Databasen använder Docker-volymen `postgres_data`, vilket innebär att 
@@ -152,8 +153,8 @@ Vid hämtning av senaste mätvärdet kontrolleras Redis först. Skulle
 vi då få en cache miss hämtas värdet från PostgreSQL databasen och läggs sedan
 in i Redis cachen.
 
-Så i kort är PostgreSQL den enda persistent datakällan och Redis fungerar endast
-som cache.
+Kort sagt är PostgreSQL den enda persistenta datakällan och Redis fungerar i
+nuvarande konfiguration endast som cache.
 
 ## Tester
 
@@ -174,11 +175,11 @@ medeltemperatur och mätningar från de senaste 24 timmarna finns i:
 
 ## CI
 
-Projektet använder GitHub Actions för CI (Continous Integration).
+Projektet använder GitHub Actions för CI (Continuous Integration).
 
 Pipelinen körs automatiskt vid `push` och `pull request` och:
 
-1. Checker ut repositoryt
+1. Checkar ut repositoryt
 2. Installerar Python-dependencies
 3. Kör testerna med pytest
 4. Bygger API:ts Docker-image
@@ -189,7 +190,7 @@ Workflow-filen finns i:
 
 ## Kubernetes
 
-Projektet innehåller en introducerade Kubernetes-demo för REST API:t.
+Projektet innehåller en introducerande Kubernetes-demo för REST API:t.
 
 Minikube startas med:
 
@@ -216,7 +217,7 @@ För att kontrollera poddarna:
 kubectl get pods
 ```
 
-Deploymenten är konfigurerar för att använda tre replicas av API:t. Om en pod
+Deploymenten är konfigurerad för att använda tre replicas av API:t. Om en pod
 tas bort skapar Kubernetes automatiskt en ersättare för att återställa till
 det antal replicas vi konfigurerat den för (som nämnt tidigare 3).
 
@@ -242,12 +243,13 @@ Mer dokumentation finns i `docs/`:
 
 - Kubernetes-daemon distribuerar endast REST API:t. PostgreSQL och Redis
   körs inte i Kubernetes
-- Redis används endast som cache av senaste mätvärdet för varje sensor
-  och har ingen persistent lagring, samt kan ej i nuvarande konfiguration 
-  lagra mer data om PostgreSQL går ner.
+- Redis används endast som cache för senaste mätvärdet och kan därför inte
+  ersätta PostgreSQL om databasen blir otillgänglig.
+  
 - Projektet använder simulerade sensorer och inte fysisk hårdvara, vilket
-  av egen erfarenhet ger falsk trygget när det med simulering fungerar, men med
-  riktig sensor fungerar det ej som det ska.
+  av egen erfarenhet ger falsk trygget när det med simulering fungerar, 
+  vilket inte är en garanti att det skulle fungera på samma sätt med riktig
+  sensorhårdvara
 
 ## Stoppa projektet
 
