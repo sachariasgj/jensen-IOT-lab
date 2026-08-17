@@ -2,7 +2,7 @@
 
 Diagrammet visar den färdiga lösninges lokala Docker Compose-miljö, CI-pipeline samt en simpel kubernetes demo.
 
-![Arkitekturdiagram](architecture.png)
+![Arkitekturdiagram](Architecture-diagram.png)
 
 Den lokala miljön består av tre simulerade IoT-sensorer, REST API,
 PostgreSQL och Redis. Sensorerna skickar mätvärden till vårt API
