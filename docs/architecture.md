@@ -14,5 +14,5 @@ Docker-image för vårt API vid push och pull requests.
 
 Kubernetes exemplet bestor av en Service och en Deployment med tre pod-repliker.
 Om en Pod försvinner skapar Kubernetes automatiskt en ersättare för att behålla
-det önskade antalet repliker, vilket i vårt fall är 3 st repliker.
+det önskade antalet repliker, vilket i vårt fall är 3 st repliker (Av vår Docker Image på vårt API).
 
