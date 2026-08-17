@@ -1,4 +1,4 @@
-# Reflektionsdokument – obligatorisk leverabel
+# Reflektionsdokument
 
 1. **Varför ska sensorerna kommunicera med ett API i stället för direkt med PostgreSQL?**
 
