@@ -1,40 +1,18 @@
-# Arkitekturdiagram – obligatorisk leverabel
+# Arkitekturdiagram
 
-Skapa ett enkelt diagram över **din färdiga lösning**. Det ska visa komponenterna och hur de kommunicerar; du behöver inte använda UML eller någon annan avancerad standard.
+Diagrammet visar den färdiga lösninges lokala Docker Compose-miljö, CI-pipeline samt en simpel kubernetes demo.
 
-Diagrammet ska minst visa:
+![Arkitekturdiagram](architecture.png)
 
-- en klient eller användare som anropar lösningen
-- de tre simulerade IoT-sensorerna
-- REST API:t
-- PostgreSQL för beständig historik
-- Redis för cache av senaste mätning
-- Docker Compose som lokal körmiljö
-- CI-pipelinen
-- Kubernetes-demon med Deployment, Pod-repliker och Service
+Den lokala miljön består av tre simulerade IoT-sensorer, REST API,
+PostgreSQL och Redis. Sensorerna skickar mätvärden till vårt API
+med hjälp av HTTP POST. PosgreSQL används för persistent historik
+medan Redis används som cache för senaste mätvärdet (för varje sensor).
 
-Använd namngivna pilar som visar viktiga anrop och dataflöden, exempelvis `HTTP POST /measurements`, `SQL` och `cache read/write`. Det ska gå att se vilket flöde som är skrivintensivt (**write-heavy**), vad som cacheas och vad som måste vara persistent.
+GitHub Actions används för CI och kör tester för att sedan bygga en
+Docker-image för vårt API vid push och pull requests.
 
-Ett enkelt exempel på detaljnivå:
+Kubernetes exemplet bestor av en Service och en Deployment med tre pod-repliker.
+Om en Pod försvinner skapar Kubernetes automatiskt en ersättare för att behålla
+det önskade antalet repliker, vilket i vårt fall är 3 st repliker.
 
-```text
-[3 sensorer] -- HTTP POST /measurements --> [REST API]
-                                              |  \
-                               SQL, historik  |   \ senaste värde
-                                              v    v
-                                        [PostgreSQL] [Redis cache]
-
-[GitHub push] --> [CI: tester + image build]
-[Användare] --> [Kubernetes Service] --> [Deployment: 3 Pod-repliker]
-```
-
-Exemplet är vägledning, inte en mall som måste kopieras. Du kan göra ett sammanhängande diagram eller två tydligt märkta vyer (lokal Docker Compose-miljö och Kubernetes-demo). Gör inte diagrammet mer detaljerat än vad som behövs för att förklara lösningen.
-
-## Så lämnas det i repositoryt
-
-1. Skapa diagrammet i valfritt verktyg, exempelvis diagrams.net, Excalidraw, Visio, PowerPoint eller Figma.
-2. Exportera det som PNG eller PDF till `docs/`.
-3. Länka eller bädda in filen här.
-4. Ersätt denna instruktion med en kort beskrivning av diagrammet och dina viktigaste arkitekturval.
-
-Kontrollera före inlämning att text och pilar går att läsa direkt från GitHub och att diagrammet stämmer med den kod du faktiskt lämnar in.
